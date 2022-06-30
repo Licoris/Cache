@@ -1,20 +1,22 @@
-package Caches;
+package CacheInMemory;
 
 import CacheInterface.Cache;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-public class LRUCache<K, V> implements Cache<K, V>
+public class LRUCacheMemory<K extends String, V extends String> implements Cache<K, V>
     {
-        int currentSize;
-        int maxSize;
-        Node<K, V> mostRecentlyUsed;
-        Node<K, V> leastRecentlyUsed;
-        Map<K, Node<K, V>> cacheElementsMap;
+        private int currentSize;
+        private int maxSize;
+        private Node<K, V> mostRecentlyUsed;
+
+        private Node<K, V> leastRecentlyUsed;
+        private Map<K, Node<K, V>> cacheElementsMap;
 
 
-        public LRUCache(int maxSize)
+        public LRUCacheMemory(int maxSize)
             {
                 this.leastRecentlyUsed = new Node<>(null, null, null, null);
                 this.mostRecentlyUsed = leastRecentlyUsed;
@@ -28,6 +30,7 @@ public class LRUCache<K, V> implements Cache<K, V>
             {
                 //Если ключ уже содержится, то выходим из метода
                 if (cacheElementsMap.containsKey(key)) {
+                    System.out.println("Key already exists.");
                     return;
                 }
 
@@ -58,18 +61,18 @@ public class LRUCache<K, V> implements Cache<K, V>
 
 
         @Override
-        public V get(K key)
+        public Optional<V> get(K key)
             {
                 //получаем значение ключа из хэшмап
                 Node<K, V> tempNode = cacheElementsMap.get(key);
 
                 //проверяем существует ли ключ
                 if (tempNode == null) {
-                    return null;
+                    return Optional.empty();
                 }
                 //если значение mru , просто возвращаем его
                 else if (tempNode == mostRecentlyUsed) {
-                    return tempNode.value;
+                    return Optional.ofNullable(tempNode.value);
                 }
 
                 //создаем значения для связки 2 узлов после и перед нашим основным узлом.
@@ -91,11 +94,20 @@ public class LRUCache<K, V> implements Cache<K, V>
                 tempNode.next = null;
                 mostRecentlyUsed = tempNode;
 
-                return tempNode.value;
+                return Optional.ofNullable(tempNode.value);
             }
 
 
+        //очищаем хэшмап, обнуляем размер кэша, также обновляем значения lru и mru на начальные
+        public void clearCache()
+            {
+                cacheElementsMap.clear();
 
+                leastRecentlyUsed = new Node<>(null, null, null, null);
+                mostRecentlyUsed = leastRecentlyUsed;
+
+                currentSize = 0;
+            }
 
         @Override
         public String toString()

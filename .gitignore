@@ -1,8 +1,8 @@
 # ignore all files except src
 /*
-src/Builder
-src/ConcreteBuilder
-src/Product
+src/*
+!src/CacheInMemory
+!CacheInterface
 !.gitignore
 !src
 

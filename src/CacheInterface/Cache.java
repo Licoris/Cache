@@ -1,10 +1,15 @@
 package CacheInterface;
 
+import java.util.Map;
+import java.util.Optional;
+
 public interface Cache<K, V>
     {
         void put(K key, V value);
 
-        V get(K key);
+        Optional<V> get(K key);
+
+        void clearCache();
 
         class Node<K, V>
             {
@@ -12,6 +17,7 @@ public interface Cache<K, V>
                 public Node<K, V> next;
                 public K key;
                 public V value;
+
 
                 public Node(Node<K, V> previous, Node<K, V> next, K key, V value)
                     {
@@ -24,7 +30,7 @@ public interface Cache<K, V>
                 @Override
                 public String toString()
                     {
-                        return "CacheElement{" +
+                        return "Node{" +
                                 "key=" + key +
                                 ", value=" + value +
                                 '}';
