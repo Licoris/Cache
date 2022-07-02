@@ -16,7 +16,6 @@ public class LRUCacheMemory<K extends String, V extends String> implements Cache
         private Map<K, Node<K, V>> cacheElementsMap;
         private Node<K, V> dummyNode;
 
-
         public LRUCacheMemory(int maxSize)
             {
                 this.leastRecentlyUsed = new Node<>(null, null, null, null);
@@ -30,14 +29,13 @@ public class LRUCacheMemory<K extends String, V extends String> implements Cache
         public boolean put(K key, V value)
             {
                 Node<K, V> newNode;
-
                 if (this.cacheElementsMap.containsKey(key)) {
                     Node<K, V> existingNode = cacheElementsMap.get(key);
                     this.updateAndMoveToFront(existingNode, value);
                     return true;
                 } else {
                     newNode = new Node<>(mostRecentlyUsed, null, key, value);
-                    makeNewMRU(newNode);
+                    this.makeNewMRU(newNode);
                 }
 
                 if (newNode.isEmpty()) return false;
@@ -47,9 +45,9 @@ public class LRUCacheMemory<K extends String, V extends String> implements Cache
                 }//поинтер lru кидаем на самый 1 элемент, до вызова get или до заполнения кэша
                 else if (currentSize < maxSize) {
                     if (currentSize == 0) {
-                        leastRecentlyUsed = newNode;
+                        this.leastRecentlyUsed = newNode;
                     }
-                    currentSize++;
+                    this.currentSize++;
                 }
                 return true;
             }
@@ -98,18 +96,15 @@ public class LRUCacheMemory<K extends String, V extends String> implements Cache
         @Override
         public Optional<V> get(K key)
             {
-
                 Node<K, V> tempNode = cacheElementsMap.get(key);
 
                 if (tempNode == null || tempNode.isEmpty()) {
                     return Optional.empty();
-                }
-                else if (tempNode == mostRecentlyUsed) {
+                } else if (tempNode == mostRecentlyUsed) {
                     return Optional.of(tempNode.getValue());
                 }
 
                 this.moveToFront(tempNode);
-
 
                 return Optional.of(tempNode.getValue());
             }
@@ -117,7 +112,7 @@ public class LRUCacheMemory<K extends String, V extends String> implements Cache
         public void moveToFront(@NotNull Node<K, V> node)
             {
                 if (!node.isEmpty()) {
-                    updateAndMoveToFront(node, node.getValue());
+                    this.updateAndMoveToFront(node, node.getValue());
                 }
             }
 
