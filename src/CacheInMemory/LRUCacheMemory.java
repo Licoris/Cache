@@ -14,7 +14,6 @@ public class LRUCacheMemory<K extends String, V extends String> implements Cache
         private int currentSize;
         private int maxSize;
         private Map<K, Node<K, V>> cacheElementsMap;
-        private Node<K, V> dummyNode;
 
         public LRUCacheMemory(int maxSize)
             {
@@ -89,7 +88,6 @@ public class LRUCacheMemory<K extends String, V extends String> implements Cache
                 mostRecentlyUsed.setNext(node);
                 node.setNext(null);
                 mostRecentlyUsed = node;
-
             }
 
 
